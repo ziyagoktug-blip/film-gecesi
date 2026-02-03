@@ -145,11 +145,13 @@ h1 {
 function selectFilm(e, filmId) {
     const selectedPoster = e.currentTarget;
 
+    // 👉 seçenekleri HEMEN gizle
+    document.getElementById('container').style.display = 'none';
+
+    // 🍿 sadece seçilen film patlasın
     popcornExplosion(selectedPoster);
 
     setTimeout(() => {
-        document.getElementById('container').style.display = 'none';
-
         const final = document.getElementById('final');
         const gif = document.getElementById('finalGif');
 
@@ -159,7 +161,7 @@ function selectFilm(e, filmId) {
 
         final.style.display = 'flex';
         final.style.pointerEvents = 'auto';
-    }, 700);
+    }, 600); // sadece patlama süresi kadar
 }
 
 function popcornExplosion(el) {
@@ -211,4 +213,5 @@ function popcornExplosion(el) {
 
 </body>
 </html>
+
 
