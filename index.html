@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Film Gecesi 🎬</title>
+
+<style>
+/* modal */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background: #111;
+    padding: 30px;
+    max-width: 420px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.9); opacity: 0 }
+    to   { transform: scale(1); opacity: 1 }
+}
+
+.modal-content h2 {
+    margin-bottom: 10px;
+}
+
+.modal-content p {
+    font-size: 15px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.close {
+    position: absolute;
+    right: 18px;
+    top: 14px;
+    font-size: 26px;
+    cursor: pointer;
+}
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #444, #1a1a1a);
+    font-family: 'Arial', sans-serif;
+    color: #fff;
+    overflow: hidden;
+}
+@media (max-width: 768px) {
+    body {
+        background: radial-gradient(circle at top, #3a3a3a, #1a1a1a);
+    }
+}
+
+h1 {
+    margin: 30px auto 0;
+    font-size: 42px;
+    letter-spacing: 2px;
+    text-align: center;
+    width: 100%;
+    color: #ffffff;
+
+    text-shadow:
+        0 0 6px rgba(255,255,255,0.9),
+        0 0 14px rgba(255,78,205,0.8),
+        0 0 30px rgba(255,78,205,0.7);
+
+    opacity: 1;
+}
+
+@keyframes neonPulse {
+    from {
+        text-shadow:
+            0 0 5px #fcff4e,
+            0 0 10px #fcff4e,
+            0 0 20px #fcff4e,
+            0 0 40px rgba(78, 255, 78, 0.6);
+    }
+    to {
+        text-shadow:
+            0 0 10px #ff9de8,
+            0 0 20px #ff9de8,
+            0 0 40px #ff4ecd,
+            0 0 80px rgba(255, 78, 205, 1);
+    }
+}
+@media (max-width: 768px) {
+    h1 {
+        text-shadow:
+            0 0 4px #ff4ecd,
+            0 0 8px #ff4ecd,
+            0 0 16px rgba(255, 78, 205, 0.8);
+    }
+}
+
+
+.container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 60px;
+}
+
+/* AFİŞ KARTI */
+.poster {
+    width: 220px;
+    height: 330px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 18px;
+    cursor: pointer;
+
+    filter: brightness(1.15) contrast(1.1);
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,0.6),
+        0 0 0 2px rgba(255,255,255,0.15);
+
+    transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s;
+    .poster {
+    -webkit-tap-highlight-color: transparent;
+}
+
+}
+
+.poster:hover {
+    transform: scale(1.08);
+    filter: brightness(1.3) contrast(1.2);
+    box-shadow:
+        0 25px 55px rgba(0,0,0,0.8),
+        0 0 0 3px rgba(255,78,205,0.8);
+}
+
+/* Film adı */
+.poster::after {
+    content: attr(data-title);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 14px;
+
+    background: linear-gradient(
+        transparent,
+        rgba(0,0,0,0.55)
+    );
+
+    font-weight: bold;
+    font-size: 18px;
+    text-align: center;
+    color: #fff;
+
+    text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+}
+
+/* Popcorn parçaları */
+.kernel {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+    pointer-events: none;
+    z-index: 1000;
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.4));
+}
+
+/* GIF sahnesi */
+#final {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+        rgba(0,0,0,0.65),
+        rgba(0,0,0,0.85)
+    );
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+#final.show {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+#finalText {
+    font-size: clamp(26px, 6vw, 42px);
+    font-weight: 700;
+    text-align: center;
+    padding: 30px 40px;
+    border-radius: 20px;
+
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(6px);
+
+    box-shadow: 0 0 40px rgba(255,255,255,0.25);
+    animation: popInFinal 0.4s ease;
+}
+
+@keyframes popInFinal {
+    from { transform: scale(0.95); opacity: 0 }
+    to   { transform: scale(1); opacity: 1 }
+}
+
+.fade-out {
+    animation: fadeOut 0.8s ease forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+}
+/* ekran altı mısır birikme alanı */
+#ground {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 120px;
+    pointer-events: none;
+    z-index: 900;
+}
+
+/* mısırlar */
+.kernel {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* 📱 MOBİL & TABLET */
+@media (max-width: 768px) {
+
+    h1 {
+        font-size: 26px;
+        margin-top: 20px;
+        text-align: center;
+        padding: 0 10px;
+    }
+
+    .container {
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+        margin-top: 30px;
+    }
+
+    .poster {
+        width: 180px;
+        height: 270px;
+    }
+
+    .poster::after {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    #final img {
+        width: 300px;
+    }
+}
+.back-btn {
+    margin-top: 12px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.4);
+    color: #fff;
+    padding: 10px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+.back-btn:hover {
+    opacity: 1;
+    background: rgba(255,255,255,0.08);
+}
+.modal-btn {
+    width: 100%;
+    margin-top: 12px;
+    padding: 12px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 15px;
+    border: 1px solid rgba(255,255,255,0.35);
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    transition: all 0.25s ease;
+}
+
+.modal-btn:hover {
+    background: rgba(255,255,255,0.16);
+    transform: translateY(-1px);
+}
+
+/* Seç butonu biraz daha vurgulu olsun */
+.modal-btn.primary {
+    background: linear-gradient(135deg, #ffcc70, #ff8c42);
+    color: #000;
+    font-weight: bold;
+    border: none;
+}
+
+.modal-btn.primary:hover {
+    filter: brightness(1.05);
+}
+
+</style>
+</head>
+
+
+<body>
+<div id="ground"></div>
+<h1>🎬 Movie Night</h1>
+
+<div class="container" id="container">
+    <div class="poster"
+         data-title="Inception"
+         style="background-image:url('https://image.tmdb.org/t/p/w500/9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg')"
+         onclick="openModal(1)"
+>
+    </div>
+
+    <div class="poster"
+         data-title="Interstellar"
+         style="background-image:url('https://image.tmdb.org/t/p/w500/rAiYTfKGqDCRIIqo664sY9XZIvQ.jpg')"
+         onclick="openModal(2)"
+>
+    </div>
+
+    <div class="poster"
+         data-title="Fight Club"
+         style="background-image:url('https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg')"
+         onclick="openModal(3)"
+>
+    </div>
+</div>
+
+<div id="final">
+    <div id="finalText"></div>
+</div>
+
+
+<script> //js
+const films = {
+    1: {
+        title: "Inception",
+        plot: "Bir hırsız, rüyalar aracılığıyla bilinçaltından sır çalabilme yeteneğine sahiptir. Ancak bu kez görevi bir fikir eklemektir."
+    },
+    2: {
+        title: "Interstellar",
+        plot: "İnsanlık yok olmanın eşiğindeyken, bir grup astronot yeni bir yaşam alanı bulmak için galaksiler arası yolculuğa çıkar."
+    },
+    3: {
+        title: "Fight Club",
+        plot: "Uykusuzluk çeken bir adam, gizemli Tyler Durden ile tanışır ve yeraltı dövüş kulübü kurulur."
+    }
+};
+
+let selectedFilmId = null;
+    
+    const popcornImages = [
+    "images/pop1.png",
+    "images/pop2.png"
+    
+    ];
+function selectFilm(e, filmId) {
+    const selectedPoster = document.querySelector(
+        `.poster[onclick="openModal(${filmId})"]`
+        );
+    const container = document.getElementById('container');
+
+    // 🍿 önce patlat
+    popcornExplosion(selectedPoster);
+
+    // 🎞️ yumuşak kaybolma
+    container.classList.add('fade-out');
+
+    // 🎬 animasyon bitince gerçekten gizle
+    setTimeout(() => {
+        container.style.display = 'none';
+    }, 800); // CSS süresiyle aynı
+
+    // 🎥 GIF sahnesi
+    setTimeout(() => {
+        const final = document.getElementById('final');
+        const text = document.getElementById('finalText');
+
+        text.innerHTML = `
+            <strong>📅 22 Şubat Cumartesi – 21:00</strong><br><br>  
+        `;
+
+        final.classList.add('show');
+        final.style.pointerEvents = 'auto';
+    }, 1200);
+
+}
+
+
+function popcornExplosion(el) {
+    const rect = el.getBoundingClientRect();
+    const groundY = window.innerHeight - 90; // zemin seviyesi
+
+    for (let i = 0; i < 80; i++) {
+        const k = document.createElement("div");
+        k.className = "kernel";
+
+        const img = popcornImages[Math.floor(Math.random() * popcornImages.length)];
+        k.style.backgroundImage = `url(${img})`;
+
+        // başlangıç konumu (poster ortası)
+        let x = rect.left + rect.width / 2;
+        let y = rect.top + rect.height / 2 + window.scrollY;
+
+        // başlangıç hızları (rastgele)
+        let vx = (Math.random() - 0.5) * 10;   // yatay
+        let vy = -Math.random() * 12 - 6;      // yukarı fırlama
+
+        const gravity = 0.6;   // yerçekimi
+        const friction = 0.75; // sekmede hız kaybı
+        const bounce = 0.7;    // zıplama gücü
+
+        k.style.left = x + "px";
+        k.style.top = y + "px";
+        document.body.appendChild(k);
+
+        function animate() {
+            // yerçekimi her an etkiliyor
+            vy += gravity;
+
+            x += vx;
+            y += vy;
+            // ⬅️➡️ SAĞ & SOL DUVARLAR
+            if (x <= 0) {
+                x = 0;
+                vx *= 0.995;
+            }
+
+            if (x >= window.innerWidth - 24) {
+                x = window.innerWidth - 24;
+                vx *= 0.995;
+            }
+            // zemine çarpınca
+            if (y >= groundY) {
+                y = groundY;
+                vy = -vy * bounce;
+                vx *= friction;
+
+                // çok yavaşladıysa dur
+                if (Math.abs(vy) < 1) {
+                    vy = 0;
+                }
+            }
+
+            k.style.left = x + "px";
+            k.style.top = y + "px";
+            k.style.transform = `rotate(${x + y}deg)`;
+
+            // hâlâ hareket varsa devam
+            if (vy !== 0 || Math.abs(vx) > 0.1) {
+                requestAnimationFrame(animate);
+            }
+        }
+            
+
+        requestAnimationFrame(animate);
+    }
+}
+function openModal(id) {
+    selectedFilmId = id;
+
+    document.getElementById("modalTitle").innerText = films[id].title;
+    document.getElementById("modalText").innerText = films[id].plot;
+
+    document.getElementById("modal").style.display = "flex";
+
+    document.getElementById("selectBtn").onclick = (e) => {
+        closeModal();
+        selectFilm(e, id);
+    };
+    document.getElementById("backBtn").onclick = () => {
+    closeModal();
+    };
+
+}
+
+function closeModal() {
+    document.getElementById("modal").style.display = "none";
+}
+
+
+</script>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <h2 id="modalTitle"></h2>
+            <p id="modalText"></p>
+            <button id="selectBtn" class="modal-btn primary">Bu filmi seç 🍿</button>
+            <button id="backBtn" class="modal-btn">Geri</button>
+
+        </div>
+    </div>
+
+</body>
+</html>
+
+
