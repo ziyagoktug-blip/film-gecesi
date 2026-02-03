@@ -143,12 +143,9 @@ h1 {
     
     ];
 function selectFilm(e, filmId) {
+    const selectedPoster = e.currentTarget;
 
-    const posters = document.querySelectorAll('.poster');
-    posters.forEach(p => {
-        popcornExplosion(p);
-        p.classList.add('explode');
-    });
+    popcornExplosion(selectedPoster);
 
     setTimeout(() => {
         document.getElementById('container').style.display = 'none';
@@ -161,6 +158,7 @@ function selectFilm(e, filmId) {
         if (filmId === 3) gif.src = 'gifs/fightclub.gif';
 
         final.style.display = 'flex';
+        final.style.pointerEvents = 'auto';
     }, 700);
 }
 
@@ -213,3 +211,4 @@ function popcornExplosion(el) {
 
 </body>
 </html>
+
